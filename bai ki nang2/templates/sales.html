@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bán hàng - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+
+            <a href="/dashboard">📊 Dashboard</a>
+
+            <a href="/foods">🍜 Món ăn</a>
+
+            <a href="/ingredients">📦 Nguyên liệu</a>
+
+            <a href="/suppliers">🚚 Nhà cung cấp</a>
+
+            <a href="/sales" class="active">💰 Bán hàng</a>
+
+            <a href="/feedback">💬 Phản hồi</a>
+
+            <a href="/reports">📈 Báo cáo</a>
+
+        </nav>
+
+        <div class="logout">
+
+            <a href="/">🚪 Đăng xuất</a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Quản lý bán hàng</h1>
+
+                <p>Ghi nhận các giao dịch bán hàng</p>
+
+            </div>
+
+            <div class="user">
+
+                👤 Quản trị viên
+
+            </div>
+
+        </header>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>Ghi nhận bán hàng</h2>
+
+            </div>
+
+
+            <!-- FORM BÁN HÀNG -->
+
+            <div
+                style="
+                    margin-bottom:20px;
+                    padding:20px;
+                    background:#f8fafc;
+                    border-radius:10px;
+                "
+            >
+
+                <form method="POST" action="/sales/add">
+
+                    <select name="food_id" required>
+
+                        <option value="">
+                            -- Chọn món ăn --
+                        </option>
+
+                        {% for food in foods %}
+
+                        <option value="{{ food['id'] }}">
+
+                            {{ food['name'] }}
+                            -
+                            {{ "{:,.0f}".format(food['price']) }}đ
+                            -
+                            còn {{ food['quantity'] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        placeholder="Số lượng bán"
+                        required
+                    >
+
+
+                    <button type="submit" class="add-btn">
+
+                        💰 Ghi nhận bán hàng
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- TÌM KIẾM -->
+
+            <form
+                method="GET"
+                action="/sales"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="keyword"
+                    placeholder="🔍 Tìm kiếm theo tên món..."
+                    value="{{ keyword }}"
+                >
+
+                <button type="submit">
+
+                    Tìm kiếm
+
+                </button>
+
+            </form>
+
+
+            <!-- DANH SÁCH BÁN HÀNG -->
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Món ăn</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Tổng tiền</th>
+
+                        <th>Ngày bán</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for sale in sales %}
+
+                    <tr>
+
+                        <td>
+                            {{ sale["id"] }}
+                        </td>
+
+                        <td>
+                            🍜 {{ sale["food_name"] }}
+                        </td>
+
+                        <td>
+                            {{ sale["quantity"] }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ "{:,.0f}".format(sale["total"]) }}đ
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ sale["sale_date"] }}
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="/sales/delete/{{ sale['id'] }}"
+                                style="display:inline;"
+                                onsubmit="return confirm('Bạn có chắc muốn xóa giao dịch này?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    🗑️
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

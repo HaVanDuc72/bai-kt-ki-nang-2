@@ -1,0 +1,557 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Đề xuất thực đơn</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 22px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .header p {
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.18);
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.28);
+        }
+
+        /* CONTAINER */
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        /* AI BANNER */
+
+        .ai-banner {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-left: 6px solid #7c3aed;
+        }
+
+        .ai-banner h2 {
+            color: #7c3aed;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .ai-banner p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* GEMINI RESULT */
+
+        .ai-result {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-left: 6px solid #2563eb;
+        }
+
+        .ai-result h2 {
+            color: #2563eb;
+            margin-bottom: 18px;
+            font-size: 24px;
+        }
+
+        .ai-content {
+            background: #f5f3ff;
+            border-radius: 12px;
+            padding: 20px;
+            color: #374151;
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-line;
+        }
+
+        /* SECTION TITLE */
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-title h2 {
+            font-size: 23px;
+        }
+
+        .badge {
+            background: #ede9fe;
+            color: #6d28d9;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* FOOD GRID */
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            transition: 0.2s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+        }
+
+        .food-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .food-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .rank {
+            background: #2563eb;
+            color: white;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 18px;
+            color: #059669;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sold {
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        .reason {
+            background: #f5f3ff;
+            border-radius: 10px;
+            padding: 13px;
+            color: #5b21b6;
+            line-height: 1.5;
+        }
+
+        /* INGREDIENTS */
+
+        .ingredient-section {
+            margin-top: 40px;
+        }
+
+        .ingredient-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+
+        .ingredient-table th {
+            background: #eef2ff;
+            color: #374151;
+            text-align: left;
+            padding: 15px;
+        }
+
+        .ingredient-table td {
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .low-stock {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .normal-stock {
+            color: #059669;
+            font-weight: bold;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            color: #6b7280;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                margin-top: 20px;
+            }
+
+            .ingredient-table {
+                font-size: 14px;
+            }
+
+            .ingredient-table th,
+            .ingredient-table td {
+                padding: 10px;
+            }
+
+            .ai-result {
+                padding: 18px;
+            }
+
+            .ai-content {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>🤖 AI Đề xuất thực đơn</h1>
+
+            <p>
+                Phân tích doanh số và nguyên liệu để hỗ trợ quản lý căng tin
+            </p>
+
+        </div>
+
+        <a href="/dashboard" class="back-btn">
+            ← Về Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="container">
+
+        <!-- AI INFORMATION -->
+
+        <div class="ai-banner">
+
+            <h2>✨ Phân tích từ AI</h2>
+
+            <p>
+                Hệ thống sử dụng Gemini AI để phân tích dữ liệu món ăn,
+                doanh số bán hàng và nguyên liệu hiện có nhằm đưa ra
+                đề xuất thực đơn phù hợp cho căng tin.
+            </p>
+
+        </div>
+
+
+        <!-- GEMINI AI RESULT -->
+
+        <div class="ai-result">
+
+            <h2>🤖 Phân tích từ Gemini AI</h2>
+
+            <div class="ai-content">
+                {{ ai_text }}
+            </div>
+
+        </div>
+
+
+        <!-- RECOMMENDATIONS -->
+
+        <div class="section-title">
+
+            <h2>🍽️ Món ăn được đề xuất</h2>
+
+            <span class="badge">
+                {{ recommendations|length }} món
+            </span>
+
+        </div>
+
+
+        {% if recommendations %}
+
+        <div class="food-grid">
+
+            {% for item in recommendations %}
+
+            <div class="food-card">
+
+                <div class="food-top">
+
+                    <div class="food-name">
+                        {{ item.name }}
+                    </div>
+
+                    <div class="rank">
+                        {{ loop.index }}
+                    </div>
+
+                </div>
+
+
+                <div class="price">
+
+                    {{ "{:,.0f}".format(item.price) }} VNĐ
+
+                </div>
+
+
+                <div class="sold">
+
+                    📊 Đã bán:
+
+                    <strong>
+                        {{ item.sold }}
+                    </strong>
+
+                    phần
+
+                </div>
+
+
+                <div class="reason">
+
+                    <strong>🤖 Nhận xét:</strong>
+
+                    <br>
+
+                    {{ item.reason }}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            <h3>Chưa có dữ liệu món ăn</h3>
+
+            <p>
+                Hãy thêm món ăn vào hệ thống để AI có thể đưa ra đề xuất.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- INGREDIENTS -->
+
+        <div class="ingredient-section">
+
+            <div class="section-title">
+
+                <h2>📦 Tình trạng nguyên liệu</h2>
+
+                <span class="badge">
+                    Kho nguyên liệu
+                </span>
+
+            </div>
+
+
+            {% if ingredients %}
+
+            <table class="ingredient-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Nguyên liệu</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Đơn vị</th>
+
+                        <th>Trạng thái</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for ingredient in ingredients %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ ingredient.name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ ingredient.quantity }}
+                        </td>
+
+                        <td>
+                            {{ ingredient.unit }}
+                        </td>
+
+                        <td>
+
+                            {% if ingredient.quantity <= ingredient.min_quantity %}
+
+                                <span class="low-stock">
+                                    ⚠ Sắp hết
+                                </span>
+
+                            {% else %}
+
+                                <span class="normal-stock">
+                                    ✓ Đủ hàng
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="empty">
+
+                <h3>Kho chưa có nguyên liệu</h3>
+
+                <p>
+                    Vui lòng thêm nguyên liệu để hệ thống phân tích.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        Hệ thống quản lý căng tin trường học tích hợp AI
+
+        <br>
+
+        Smart School Canteen Management System
+
+    </div>
+
+</body>
+
+</html>
+```

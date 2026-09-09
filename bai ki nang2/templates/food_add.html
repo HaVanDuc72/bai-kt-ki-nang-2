@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Thêm món ăn - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods" class="active">🍜 Món ăn</a>
+            <a href="/ingredients">📦 Nguyên liệu</a>
+            <a href="/suppliers">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+        <div class="logout">
+            <a href="/">🚪 Đăng xuất</a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Thêm món ăn</h1>
+                <p>Thêm món ăn mới vào căng tin</p>
+            </div>
+
+            <div class="user">
+                👤 Quản trị viên
+            </div>
+
+        </header>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Thông tin món ăn</h2>
+            </div>
+
+            <form method="POST" action="/foods/add">
+
+                <p>
+                    <label>Tên món ăn</label><br>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Ví dụ: Cơm gà"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Loại món</label><br>
+                    <input
+                        type="text"
+                        name="category"
+                        placeholder="Ví dụ: Cơm"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Giá bán</label><br>
+                    <input
+                        type="number"
+                        name="price"
+                        min="0"
+                        placeholder="Ví dụ: 30000"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Số lượng</label><br>
+                    <input
+                        type="number"
+                        name="quantity"
+                        min="0"
+                        value="0"
+                        required
+                    >
+                </p>
+
+                <button type="submit">
+                    💾 Lưu món ăn
+                </button>
+
+                <a href="/foods">
+                    ← Quay lại
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

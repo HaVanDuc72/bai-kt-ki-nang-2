@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sửa nguyên liệu - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+
+    <style>
+        .edit-container {
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .edit-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-card h2 {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .save-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+        }
+
+        .cancel-btn:hover {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods">🍜 Món ăn</a>
+            <a href="/ingredients" class="active">📦 Nguyên liệu</a>
+            <a href="/suppliers">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+        <div class="logout">
+            <a href="/logout">🚪 Đăng xuất</a>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Sửa nguyên liệu</h1>
+                <p>Cập nhật thông tin nguyên liệu</p>
+            </div>
+
+            <div class="user">
+                👤 Quản trị viên
+            </div>
+
+        </header>
+
+
+        <!-- FORM -->
+        <div class="edit-container">
+
+            <div class="edit-card">
+
+                <h2>✏️ Cập nhật nguyên liệu</h2>
+
+                <form method="POST">
+
+                    <!-- TÊN -->
+                    <div class="form-group">
+
+                        <label for="name">
+                            Tên nguyên liệu
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ ingredient['name'] }}"
+                            placeholder="Nhập tên nguyên liệu"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- ĐƠN VỊ -->
+                    <div class="form-group">
+
+                        <label for="unit">
+                            Đơn vị
+                        </label>
+
+                        <input
+                            type="text"
+                            id="unit"
+                            name="unit"
+                            value="{{ ingredient['unit'] }}"
+                            placeholder="Ví dụ: kg, quả, lít..."
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- SỐ LƯỢNG -->
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Số lượng hiện tại
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            value="{{ ingredient['quantity'] }}"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- MỨC TỐI THIỂU -->
+                    <div class="form-group">
+
+                        <label for="min_quantity">
+                            Mức tồn kho tối thiểu
+                        </label>
+
+                        <input
+                            type="number"
+                            id="min_quantity"
+                            name="min_quantity"
+                            value="{{ ingredient['min_quantity'] }}"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- BUTTON -->
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+                            💾 Lưu thay đổi
+                        </button>
+
+                        <a
+                            href="/ingredients"
+                            class="cancel-btn"
+                        >
+                            ← Hủy
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

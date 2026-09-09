@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa nhà cung cấp</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods">🍜 Món ăn</a>
+            <a href="/ingredients">📦 Nguyên liệu</a>
+            <a href="/suppliers" class="active">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Sửa nhà cung cấp</h1>
+                <p>Cập nhật thông tin nhà cung cấp</p>
+            </div>
+
+            <div class="user">
+                👤 Quản trị viên
+            </div>
+
+        </header>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Thông tin nhà cung cấp</h2>
+            </div>
+
+            <form method="POST">
+
+                <p>
+                    <label>Tên nhà cung cấp</label><br>
+
+                    <input
+                        type="text"
+                        name="name"
+                        value="{{ supplier['name'] }}"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Số điện thoại</label><br>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ supplier['phone'] or '' }}"
+                    >
+                </p>
+
+                <p>
+                    <label>Địa chỉ</label><br>
+
+                    <input
+                        type="text"
+                        name="address"
+                        value="{{ supplier['address'] or '' }}"
+                    >
+                </p>
+
+                <button type="submit" class="add-btn">
+                    💾 Lưu thay đổi
+                </button>
+
+                <a href="/suppliers">
+                    <button type="button">
+                        ← Quay lại
+                    </button>
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sửa món ăn - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods" class="active">🍜 Món ăn</a>
+            <a href="/ingredients">📦 Nguyên liệu</a>
+            <a href="/suppliers">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+        <div class="logout">
+            <a href="/">🚪 Đăng xuất</a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Sửa món ăn</h1>
+                <p>Cập nhật thông tin món ăn</p>
+            </div>
+
+            <div class="user">
+                👤 Quản trị viên
+            </div>
+
+        </header>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Thông tin món ăn</h2>
+            </div>
+
+            <form method="POST">
+
+                <p>
+                    <label>Tên món ăn</label><br>
+                    <input
+                        type="text"
+                        name="name"
+                        value="{{ food['name'] }}"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Loại món</label><br>
+                    <input
+                        type="text"
+                        name="category"
+                        value="{{ food['category'] }}"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Giá bán</label><br>
+                    <input
+                        type="number"
+                        name="price"
+                        value="{{ food['price'] }}"
+                        min="0"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Số lượng</label><br>
+                    <input
+                        type="number"
+                        name="quantity"
+                        value="{{ food['quantity'] }}"
+                        min="0"
+                        required
+                    >
+                </p>
+
+                <p>
+                    <label>Trạng thái</label><br>
+
+                    <select name="status">
+
+                        <option
+                            value="Đang bán"
+                            {% if food['status'] == 'Đang bán' %}selected{% endif %}
+                        >
+                            Đang bán
+                        </option>
+
+                        <option
+                            value="Hết hàng"
+                            {% if food['status'] == 'Hết hàng' %}selected{% endif %}
+                        >
+                            Hết hàng
+                        </option>
+
+                    </select>
+
+                </p>
+
+                <button type="submit">
+                    💾 Lưu thay đổi
+                </button>
+
+                <a href="/foods">
+                    ← Quay lại
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

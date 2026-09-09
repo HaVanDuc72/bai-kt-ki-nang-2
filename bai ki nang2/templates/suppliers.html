@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý nhà cung cấp - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+
+    <style>
+        .form-container {
+            display: none;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .form-container input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+        }
+
+        .edit-btn {
+            display: inline-block;
+            padding: 7px 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            padding: 7px 10px;
+            border: none;
+            background: #dc2626;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods">🍜 Món ăn</a>
+            <a href="/ingredients">📦 Nguyên liệu</a>
+            <a href="/suppliers" class="active">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+        <div class="logout">
+            <a href="/logout">🚪 Đăng xuất</a>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Quản lý nhà cung cấp</h1>
+                <p>Quản lý thông tin các nhà cung cấp nguyên liệu</p>
+            </div>
+
+            <div class="user">
+                👤
+                {% if role == "admin" %}
+                    Quản trị viên
+                {% else %}
+                    Nhân viên
+                {% endif %}
+            </div>
+
+        </header>
+
+
+        <!-- PANEL -->
+        <section class="panel">
+
+            <!-- HEADER -->
+            <div class="panel-header">
+
+                <h2>Danh sách nhà cung cấp</h2>
+
+                {% if role == "admin" %}
+
+                <button
+                    class="add-btn"
+                    onclick="document.getElementById('addSupplierForm').style.display='block'">
+                    + Thêm nhà cung cấp
+                </button>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- FORM THÊM -->
+            {% if role == "admin" %}
+
+            <div
+                id="addSupplierForm"
+                class="form-container"
+            >
+
+                <h3>➕ Thêm nhà cung cấp</h3>
+
+                <form method="POST" action="/suppliers/add">
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Tên nhà cung cấp"
+                        required
+                    >
+
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Số điện thoại"
+                    >
+
+                    <input
+                        type="text"
+                        name="address"
+                        placeholder="Địa chỉ"
+                    >
+
+                    <button
+                        type="submit"
+                        class="add-btn"
+                    >
+                        💾 Lưu nhà cung cấp
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="document.getElementById('addSupplierForm').style.display='none'"
+                    >
+                        Hủy
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- TÌM KIẾM -->
+            <form
+                method="GET"
+                action="/suppliers"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="keyword"
+                    placeholder="🔍 Tìm kiếm nhà cung cấp..."
+                    value="{{ keyword }}"
+                >
+
+                <button type="submit">
+                    Tìm kiếm
+                </button>
+
+            </form>
+
+
+            <!-- BẢNG -->
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Tên nhà cung cấp</th>
+
+                        <th>Số điện thoại</th>
+
+                        <th>Địa chỉ</th>
+
+                        {% if role == "admin" %}
+                        <th>Thao tác</th>
+                        {% endif %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for supplier in suppliers %}
+
+                    <tr>
+
+                        <td>
+                            {{ supplier["id"] }}
+                        </td>
+
+                        <td>
+                            🚚 {{ supplier["name"] }}
+                        </td>
+
+                        <td>
+                            {{ supplier["phone"] or "Chưa cập nhật" }}
+                        </td>
+
+                        <td>
+                            {{ supplier["address"] or "Chưa cập nhật" }}
+                        </td>
+
+                        {% if role == "admin" %}
+
+                        <td>
+
+                            <!-- SỬA -->
+                            <a
+                                href="/suppliers/edit/{{ supplier['id'] }}"
+                                class="edit-btn"
+                            >
+                                ✏️
+                            </a>
+
+
+                            <!-- XÓA -->
+                            <form
+                                method="POST"
+                                action="/suppliers/delete/{{ supplier['id'] }}"
+                                style="display:inline;"
+                                onsubmit="return confirm('Bạn có chắc muốn xóa nhà cung cấp này?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    🗑️
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                        {% endif %}
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="{% if role == 'admin' %}5{% else %}4{% endif %}"
+                            style="text-align:center;"
+                        >
+                            🚚 Chưa có nhà cung cấp nào.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

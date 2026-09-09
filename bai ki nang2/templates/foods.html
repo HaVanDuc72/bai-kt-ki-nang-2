@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý món ăn - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+
+            <a href="/foods" class="active">
+                🍜 Món ăn
+            </a>
+
+            <a href="/ingredients">
+                📦 Nguyên liệu
+            </a>
+
+            <a href="/suppliers">
+                🚚 Nhà cung cấp
+            </a>
+
+            <a href="/sales">
+                💰 Bán hàng
+            </a>
+
+            <a href="/feedback">
+                💬 Phản hồi
+            </a>
+
+            <a href="/reports">
+                📈 Báo cáo
+            </a>
+        </nav>
+
+        <div class="logout">
+            <a href="/">
+                🚪 Đăng xuất
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Quản lý món ăn</h1>
+
+                <p>
+                    Quản lý danh sách món ăn trong căng tin
+                </p>
+            </div>
+
+            <div class="user">
+                👤
+                {% if role == "admin" %}
+                    Quản trị viên
+                {% else %}
+                    Nhân viên
+                {% endif %}
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <section class="panel">
+
+            <!-- PANEL HEADER -->
+            <div class="panel-header">
+
+                <h2>
+                    Danh sách món ăn
+                </h2>
+
+                {% if role == "admin" %}
+    <a href="/foods/add">
+        ➕ Thêm món ăn
+    </a>
+{% endif %}
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <form
+                method="GET"
+                action="/foods"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="keyword"
+                    placeholder="🔍 Tìm kiếm món ăn..."
+                    value="{{ keyword }}"
+                >
+
+                <button type="submit">
+                    Tìm kiếm
+                </button>
+
+            </form>
+
+
+            <!-- FOOD TABLE -->
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Tên món</th>
+
+                        <th>Loại</th>
+
+                        <th>Giá</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Trạng thái</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for food in foods %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>
+                            {{ food["id"] }}
+                        </td>
+
+
+                        <!-- NAME -->
+                        <td>
+                            🍜 {{ food["name"] }}
+                        </td>
+
+
+                        <!-- CATEGORY -->
+                        <td>
+                            {{ food["category"] }}
+                        </td>
+
+
+                        <!-- PRICE -->
+                        <td>
+                            {{ "{:,.0f}".format(food["price"]) }}đ
+                        </td>
+
+
+                        <!-- QUANTITY -->
+                        <td>
+                            {{ food["quantity"] }}
+                        </td>
+
+
+                        <!-- STATUS -->
+                        <td>
+
+                            <span class="status-active">
+                                {{ food["status"] }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTION -->
+                        <td>
+
+                            {% if role == "admin" %}
+
+                                <!-- EDIT -->
+                                <a
+                                    href="/foods/edit/{{ food['id'] }}"
+                                    class="edit-btn"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <!-- DELETE -->
+                                <form
+                                    method="POST"
+                                    action="/foods/delete/{{ food['id'] }}"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Bạn có chắc muốn xóa món này?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="delete-btn"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            {% else %}
+
+                                <span>
+                                    Chỉ xem
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <!-- NO DATA -->
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="text-align:center;"
+                        >
+                            Không tìm thấy món ăn.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý nguyên liệu - Smart Canteen</title>
+
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>SMART</h2>
+            <span>CANTEEN</span>
+        </div>
+
+        <nav>
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/foods">🍜 Món ăn</a>
+            <a href="/ingredients" class="active">📦 Nguyên liệu</a>
+            <a href="/suppliers">🚚 Nhà cung cấp</a>
+            <a href="/sales">💰 Bán hàng</a>
+            <a href="/feedback">💬 Phản hồi</a>
+            <a href="/reports">📈 Báo cáo</a>
+        </nav>
+
+        <div class="logout">
+            <a href="/logout">🚪 Đăng xuất</a>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Quản lý nguyên liệu</h1>
+                <p>Quản lý số lượng nguyên liệu trong căng tin</p>
+            </div>
+
+            <div class="user">
+                👤
+                {% if role == "admin" %}
+                    Quản trị viên
+                {% else %}
+                    Nhân viên
+                {% endif %}
+            </div>
+
+        </header>
+
+
+        <!-- PANEL -->
+        <section class="panel">
+
+            <!-- HEADER -->
+            <div class="panel-header">
+
+                <h2>Danh sách nguyên liệu</h2>
+
+                {% if role == "admin" %}
+
+                <button
+                    class="add-btn"
+                    onclick="document.getElementById('addIngredientForm').style.display='block'">
+                    + Thêm nguyên liệu
+                </button>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- FORM THÊM NGUYÊN LIỆU -->
+            {% if role == "admin" %}
+
+            <div
+                id="addIngredientForm"
+                style="
+                    display:none;
+                    margin-bottom:20px;
+                    padding:20px;
+                    background:#f8fafc;
+                    border-radius:10px;
+                "
+            >
+
+                <h3>➕ Thêm nguyên liệu</h3>
+
+                <form method="POST" action="/ingredients/add">
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Tên nguyên liệu"
+                        required
+                    >
+
+                    <input
+                        type="text"
+                        name="unit"
+                        placeholder="Đơn vị (kg, quả, lít...)"
+                        required
+                    >
+
+                    <input
+                        type="number"
+                        name="quantity"
+                        placeholder="Số lượng hiện tại"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                    <input
+                        type="number"
+                        name="min_quantity"
+                        placeholder="Mức tồn tối thiểu"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="add-btn">
+                        💾 Lưu nguyên liệu
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="document.getElementById('addIngredientForm').style.display='none'">
+                        Hủy
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- TÌM KIẾM -->
+            <form
+                method="GET"
+                action="/ingredients"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="keyword"
+                    placeholder="🔍 Tìm kiếm nguyên liệu..."
+                    value="{{ keyword }}"
+                >
+
+                <button type="submit">
+                    Tìm kiếm
+                </button>
+
+            </form>
+
+
+            <!-- BẢNG NGUYÊN LIỆU -->
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Tên nguyên liệu</th>
+
+                        <th>Đơn vị</th>
+
+                        <th>Số lượng</th>
+
+                        <th>Mức tối thiểu</th>
+
+                        <th>Trạng thái</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for ingredient in ingredients %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>
+                            {{ ingredient["id"] }}
+                        </td>
+
+
+                        <!-- TÊN -->
+                        <td>
+                            📦 {{ ingredient["name"] }}
+                        </td>
+
+
+                        <!-- ĐƠN VỊ -->
+                        <td>
+                            {{ ingredient["unit"] }}
+                        </td>
+
+
+                        <!-- SỐ LƯỢNG -->
+                        <td>
+                            {{ ingredient["quantity"] }}
+                        </td>
+
+
+                        <!-- MỨC TỐI THIỂU -->
+                        <td>
+                            {{ ingredient["min_quantity"] }}
+                        </td>
+
+
+                        <!-- TRẠNG THÁI -->
+                        <td>
+
+                            {% if ingredient["quantity"] <= ingredient["min_quantity"] %}
+
+                                <span style="color:red;font-weight:bold;">
+                                    ⚠️ Sắp hết
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-active">
+                                    ✓ Đủ hàng
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- THAO TÁC -->
+                        <td>
+
+                            {% if role == "admin" %}
+
+                                <!-- SỬA -->
+                                <a
+                                    href="/ingredients/edit/{{ ingredient['id'] }}"
+                                    class="edit-btn"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <!-- XÓA -->
+                                <form
+                                    method="POST"
+                                    action="/ingredients/delete/{{ ingredient['id'] }}"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Bạn có chắc muốn xóa nguyên liệu này?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="delete-btn"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            {% else %}
+
+                                <span>
+                                    Chỉ xem
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <!-- KHÔNG CÓ DỮ LIỆU -->
+                    <tr>
+
+                        <td colspan="7" style="text-align:center;">
+
+                            📦 Chưa có nguyên liệu nào.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

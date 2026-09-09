@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Phản hồi - Smart Canteen</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/dashboard.css"
+    >
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>SMART</h2>
+
+            <span>CANTEEN</span>
+
+        </div>
+
+
+        <nav>
+
+            <a href="/dashboard">
+                📊 Dashboard
+            </a>
+
+            <a href="/foods">
+                🍜 Món ăn
+            </a>
+
+            <a href="/ingredients">
+                📦 Nguyên liệu
+            </a>
+
+            <a href="/suppliers">
+                🚚 Nhà cung cấp
+            </a>
+
+            <a href="/sales">
+                💰 Bán hàng
+            </a>
+
+            <a href="/feedback" class="active">
+                💬 Phản hồi
+            </a>
+
+            <a href="/reports">
+                📈 Báo cáo
+            </a>
+
+        </nav>
+
+
+        <div class="logout">
+
+            <a href="/">
+                🚪 Đăng xuất
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Phản hồi khách hàng
+                </h1>
+
+                <p>
+                    Quản lý đánh giá và nhận xét món ăn
+                </p>
+
+            </div>
+
+
+            <div class="user">
+
+                👤 Quản trị viên
+
+            </div>
+
+        </header>
+
+
+        <section class="panel">
+
+
+            <!-- FORM -->
+
+            <div
+                style="
+                    margin-bottom:20px;
+                    padding:20px;
+                    background:#f8fafc;
+                    border-radius:10px;
+                "
+            >
+
+                <h2>
+                    💬 Thêm phản hồi
+                </h2>
+
+
+                <form
+                    method="POST"
+                    action="/feedback/add"
+                >
+
+
+                    <input
+                        type="text"
+                        name="customer_name"
+                        placeholder="Tên khách hàng"
+                    >
+
+
+                    <select
+                        name="food_id"
+                        required
+                    >
+
+                        <option value="">
+                            -- Chọn món ăn --
+                        </option>
+
+
+                        {% for food in foods %}
+
+                        <option value="{{ food['id'] }}">
+
+                            {{ food['name'] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select
+                        name="rating"
+                        required
+                    >
+
+                        <option value="">
+                            -- Chọn số sao --
+                        </option>
+
+                        <option value="5">
+                            ⭐⭐⭐⭐⭐ 5 sao
+                        </option>
+
+                        <option value="4">
+                            ⭐⭐⭐⭐ 4 sao
+                        </option>
+
+                        <option value="3">
+                            ⭐⭐⭐ 3 sao
+                        </option>
+
+                        <option value="2">
+                            ⭐⭐ 2 sao
+                        </option>
+
+                        <option value="1">
+                            ⭐ 1 sao
+                        </option>
+
+                    </select>
+
+
+                    <textarea
+                        name="comment"
+                        placeholder="Nhập nhận xét..."
+                        required
+                        rows="4"
+                        style="
+                            width:100%;
+                            margin:10px 0;
+                            padding:10px;
+                            border-radius:8px;
+                            border:1px solid #ddd;
+                        "
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        class="add-btn"
+                    >
+
+                        💾 Gửi phản hồi
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+
+            <!-- DANH SÁCH -->
+
+            <div class="panel-header">
+
+                <h2>
+                    Danh sách phản hồi
+                </h2>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Khách hàng</th>
+
+                        <th>Món ăn</th>
+
+                        <th>Đánh giá</th>
+
+                        <th>Nhận xét</th>
+
+                        <th>Thời gian</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                {% for item in feedbacks %}
+
+                <tr>
+
+                    <td>
+                        {{ item["id"] }}
+                    </td>
+
+
+                    <td>
+                        {{ item["customer_name"] or "Ẩn danh" }}
+                    </td>
+
+
+                    <td>
+                        🍜 {{ item["food_name"] }}
+                    </td>
+
+
+                    <td>
+
+                        {% for i in range(item["rating"]) %}
+                            ⭐
+                        {% endfor %}
+
+                    </td>
+
+
+                    <td>
+                        {{ item["comment"] }}
+                    </td>
+
+
+                    <td>
+                        {{ item["created_at"] }}
+                    </td>
+
+
+                    <td>
+
+                        <form
+                            method="POST"
+                            action="/feedback/delete/{{ item['id'] }}"
+                            style="display:inline;"
+                            onsubmit="return confirm('Bạn có chắc muốn xóa phản hồi này?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="delete-btn"
+                            >
+                                🗑️
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        Chưa có phản hồi nào.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Báo cáo - Smart Canteen</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/dashboard.css"
+    >
+
+</head>
+
+<body>
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>SMART</h2>
+
+            <span>CANTEEN</span>
+
+        </div>
+
+
+        <nav>
+
+            <a href="/dashboard">
+                📊 Dashboard
+            </a>
+
+            <a href="/foods">
+                🍜 Món ăn
+            </a>
+
+            <a href="/ingredients">
+                📦 Nguyên liệu
+            </a>
+
+            <a href="/suppliers">
+                🚚 Nhà cung cấp
+            </a>
+
+            <a href="/sales">
+                💰 Bán hàng
+            </a>
+
+            <a href="/feedback">
+                💬 Phản hồi
+            </a>
+
+            <a href="/reports" class="active">
+                📈 Báo cáo
+            </a>
+
+        </nav>
+
+
+        <div class="logout">
+
+            <a href="/">
+                🚪 Đăng xuất
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Báo cáo & Thống kê
+                </h1>
+
+                <p>
+                    Phân tích hoạt động kinh doanh của căng tin
+                </p>
+
+            </div>
+
+
+            <div class="user">
+
+                👤 Quản trị viên
+
+            </div>
+
+        </header>
+
+
+        <!-- THỐNG KÊ -->
+
+        <section class="stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <p>
+                        Tổng doanh thu
+                    </p>
+
+                    <h2>
+                        {{ "{:,.0f}".format(total_revenue) }}đ
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🍜
+                </div>
+
+                <div>
+
+                    <p>
+                        Tổng món đã bán
+                    </p>
+
+                    <h2>
+                        {{ total_sales }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🧾
+                </div>
+
+                <div>
+
+                    <p>
+                        Số giao dịch
+                    </p>
+
+                    <h2>
+                        {{ transaction_count }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📊
+                </div>
+
+                <div>
+
+                    <p>
+                        Trung bình/giao dịch
+                    </p>
+
+                    <h2>
+                        {{ "{:,.0f}".format(average_order) }}đ
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- HAI BẢNG -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- MÓN BÁN CHẠY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        🔥 Top món bán chạy
+                    </h2>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Món ăn
+                            </th>
+
+                            <th>
+                                Đã bán
+                            </th>
+
+                            <th>
+                                Doanh thu
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for food in best_selling %}
+
+                    <tr>
+
+                        <td>
+                            🍜 {{ food["name"] }}
+                        </td>
+
+                        <td>
+                            {{ food["total_sold"] }}
+                        </td>
+
+                        <td>
+                            {{ "{:,.0f}".format(food["revenue"]) }}đ
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="3">
+                            Chưa có dữ liệu bán hàng.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- DOANH THU -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        📅 Doanh thu 7 ngày gần nhất
+                    </h2>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Ngày
+                            </th>
+
+                            <th>
+                                Doanh thu
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for day in daily_revenue %}
+
+                    <tr>
+
+                        <td>
+                            {{ day["sale_day"] }}
+                        </td>
+
+                        <td>
+                            {{ "{:,.0f}".format(day["revenue"]) }}đ
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            Chưa có dữ liệu.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- CẢNH BÁO NGUYÊN LIỆU -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    ⚠️ Nguyên liệu cần nhập thêm
+                </h2>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nguyên liệu
+                        </th>
+
+                        <th>
+                            Còn lại
+                        </th>
+
+                        <th>
+                            Mức tối thiểu
+                        </th>
+
+                        <th>
+                            Trạng thái
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for ingredient in low_ingredients %}
+
+                <tr>
+
+                    <td>
+                        📦 {{ ingredient["name"] }}
+                    </td>
+
+                    <td>
+                        {{ ingredient["quantity"] }}
+                        {{ ingredient["unit"] }}
+                    </td>
+
+                    <td>
+                        {{ ingredient["min_quantity"] }}
+                        {{ ingredient["unit"] }}
+                    </td>
+
+                    <td>
+
+                        <span style="color:red;font-weight:bold;">
+                            ⚠️ Cần nhập thêm
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="4">
+                        ✓ Không có nguyên liệu nào dưới mức tối thiểu.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

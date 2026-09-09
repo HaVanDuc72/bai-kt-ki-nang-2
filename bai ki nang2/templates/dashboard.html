@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Dashboard - Smart Canteen</title>
+
+<link
+    rel="stylesheet"
+    href="/static/css/dashboard.css"
+>
+```
+
+</head>
+
+<body>
+
+<div class="layout">
+
+```
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <h2>SMART</h2>
+
+        <span>CANTEEN</span>
+
+    </div>
+
+
+    <nav>
+
+        <a href="/dashboard" class="active">
+            📊 Dashboard
+        </a>
+
+        <a href="/foods">
+            🍜 Món ăn
+        </a>
+
+        <a href="/ingredients">
+            📦 Nguyên liệu
+        </a>
+
+        <a href="/suppliers">
+            🚚 Nhà cung cấp
+        </a>
+
+        <a href="/sales">
+            💰 Bán hàng
+        </a>
+
+        <a href="/feedback">
+            💬 Phản hồi
+        </a>
+
+        <a href="/reports">
+            📈 Báo cáo
+        </a>
+
+        <!-- AI ĐỀ XUẤT -->
+
+        <a href="/ai-recommend">
+            🤖 AI Đề xuất thực đơn
+        </a>
+
+        <!-- AI TỔNG HỢP PHẢN HỒI -->
+
+        <a href="/ai-feedback">
+            🧠 AI Tổng hợp phản hồi
+        </a>
+        <a href="/ai-report">
+            📊 AI Báo cáo doanh thu
+        </a>
+
+    </nav>
+
+
+    <div class="logout">
+
+        <a href="/logout">
+            🚪 Đăng xuất
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Tổng quan hoạt động căng tin
+            </p>
+
+        </div>
+
+
+        <div class="user">
+
+            👤 Quản trị viên
+
+        </div>
+
+    </header>
+
+
+
+    <!-- THỐNG KÊ -->
+
+    <section class="stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🍜
+            </div>
+
+            <div>
+
+                <p>
+                    Tổng món ăn
+                </p>
+
+                <h2>
+                    {{ food_count }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📦
+            </div>
+
+            <div>
+
+                <p>
+                    Nguyên liệu
+                </p>
+
+                <h2>
+                    {{ ingredient_count }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🚚
+            </div>
+
+            <div>
+
+                <p>
+                    Nhà cung cấp
+                </p>
+
+                <h2>
+                    {{ supplier_count }}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💰
+            </div>
+
+            <div>
+
+                <p>
+                    Doanh thu
+                </p>
+
+                <h2>
+                    {{ "{:,.0f}".format(revenue) }}đ
+                </h2>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- NỘI DUNG -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- MÓN BÁN CHẠY -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    🔥 Món bán chạy
+                </h2>
+
+                <a href="/sales">
+                    Xem bán hàng
+                </a>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Món ăn
+                        </th>
+
+                        <th>
+                            Đã bán
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for food in best_selling %}
+
+                    <tr>
+
+                        <td>
+                            🍜 {{ food["name"] }}
+                        </td>
+
+                        <td>
+                            {{ food["total_sold"] }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            Chưa có dữ liệu bán hàng
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- NGUYÊN LIỆU SẮP HẾT -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <h2>
+                    ⚠️ Nguyên liệu sắp hết
+                </h2>
+
+                <a href="/ingredients">
+                    Quản lý
+                </a>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nguyên liệu
+                        </th>
+
+                        <th>
+                            Còn lại
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for ingredient in low_ingredients %}
+
+                    <tr>
+
+                        <td>
+                            📦 {{ ingredient["name"] }}
+                        </td>
+
+                        <td>
+
+                            <strong>
+                                {{ ingredient["quantity"] }}
+                                {{ ingredient["unit"] }}
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            ✓ Tất cả nguyên liệu đủ
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- AI -->
+
+    <section class="panel ai-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    🤖 AI hỗ trợ quản lý
+                </h2>
+
+                <p>
+                    Phân tích doanh số và nguyên liệu để đề xuất thực đơn
+                </p>
+
+            </div>
+
+            <a href="/ai-recommend">
+                Xem đề xuất →
+            </a>
+
+        </div>
+
+
+        <div style="
+            padding: 25px;
+            background: linear-gradient(
+                135deg,
+                #f5f3ff,
+                #eff6ff
+            );
+            border-radius: 12px;
+        ">
+
+            <h3>
+                ✨ Đề xuất thực đơn bằng AI
+            </h3>
+
+            <p style="
+                margin-top: 8px;
+                color: #64748b;
+            ">
+                Hệ thống sử dụng dữ liệu món ăn, doanh số bán hàng
+                và tình trạng nguyên liệu để hỗ trợ quản lý lựa chọn
+                món ăn phù hợp.
+            </p>
+
+            <a
+                href="/ai-recommend"
+                style="
+                    display:inline-block;
+                    margin-top:15px;
+                    padding:12px 20px;
+                    background:#7c3aed;
+                    color:white;
+                    text-decoration:none;
+                    border-radius:8px;
+                    font-weight:bold;
+                "
+            >
+                🤖 Phân tích ngay
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- TỔNG QUAN -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h2>
+                📊 Tổng quan
+            </h2>
+
+        </div>
+
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+            repeat(2, 1fr);
+            gap:20px;
+        ">
+
+
+            <div style="
+                padding:20px;
+                background:#f8fafc;
+                border-radius:12px;
+            ">
+
+                <p>
+                    Tổng giao dịch
+                </p>
+
+                <h2>
+                    {{ sale_count }}
+                </h2>
+
+            </div>
+
+
+            <div style="
+                padding:20px;
+                background:#f8fafc;
+                border-radius:12px;
+            ">
+
+                <p>
+                    Trạng thái hệ thống
+                </p>
+
+                <h2>
+                    🟢 Hoạt động
+                </h2>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+```
+
+</div>
+
+</body>
+
+</html>

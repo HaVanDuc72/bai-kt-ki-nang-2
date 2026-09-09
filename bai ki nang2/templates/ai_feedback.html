@@ -1,0 +1,388 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Tổng hợp phản hồi</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .header {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 18px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .card p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .card h2 {
+            margin: 10px 0 0;
+            font-size: 30px;
+        }
+
+        /* NHẬN XÉT CƠ BẢN */
+
+        .ai-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            border-left: 5px solid #7c3aed;
+        }
+
+        .ai-summary h2 {
+            margin-top: 0;
+        }
+
+        /* GEMINI AI */
+
+        .ai-result {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2563eb;
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .ai-result h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: #2563eb;
+        }
+
+        .ai-content {
+            background: #f5f3ff;
+            border-radius: 12px;
+            padding: 20px;
+            color: #374151;
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-line;
+        }
+
+        .ai-label {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6d28d9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* FEEDBACK */
+
+        .feedback {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+        }
+
+        .feedback-item {
+            padding: 18px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .feedback-item:last-child {
+            border-bottom: none;
+        }
+
+        .food {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .rating {
+            margin: 6px 0;
+        }
+
+        .comment {
+            color: #475569;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 800px) {
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .ai-content {
+                font-size: 14px;
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            🤖 AI Tổng hợp phản hồi khách hàng
+        </h1>
+
+        <p>
+            Phân tích đánh giá và nhận xét về món ăn
+        </p>
+
+        <a
+            href="/dashboard"
+            class="back"
+        >
+            ← Quay lại Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- THỐNG KÊ -->
+
+    <div class="stats">
+
+        <div class="card">
+
+            <p>
+                Tổng phản hồi
+            </p>
+
+            <h2>
+                {{ total }}
+            </h2>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>
+                👍 Tích cực
+            </p>
+
+            <h2>
+                {{ positive }}
+            </h2>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>
+                😐 Trung lập
+            </p>
+
+            <h2>
+                {{ neutral }}
+            </h2>
+
+        </div>
+
+
+        <div class="card">
+
+            <p>
+                ⭐ Điểm trung bình
+            </p>
+
+            <h2>
+                {{ "%.1f"|format(average_rating) }}/5
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- NHẬN XÉT CƠ BẢN -->
+
+    <div class="ai-summary">
+
+        <h2>
+            🧠 Tổng quan phản hồi
+        </h2>
+
+        <p>
+            {{ summary }}
+        </p>
+
+        <p>
+
+            <strong>
+                Phản hồi chưa tích cực:
+            </strong>
+
+            {{ negative }}
+
+        </p>
+
+    </div>
+
+
+    <!-- GEMINI AI -->
+
+    <div class="ai-result">
+
+        <span class="ai-label">
+            GEMINI AI
+        </span>
+
+        <h2>
+            🤖 Phân tích chuyên sâu từ Gemini
+        </h2>
+
+        <div class="ai-content">
+
+            {{ ai_text }}
+
+        </div>
+
+    </div>
+
+
+    <!-- DANH SÁCH PHẢN HỒI -->
+
+    <div class="feedback">
+
+        <h2>
+            💬 Danh sách phản hồi
+        </h2>
+
+
+        {% for feedback in feedbacks %}
+
+        <div class="feedback-item">
+
+            <div class="food">
+
+                🍜
+                {{ feedback["food_name"] or "Không xác định" }}
+
+            </div>
+
+
+            <div class="rating">
+
+                ⭐
+                {{ feedback["rating"] }}/5
+
+            </div>
+
+
+            <div class="comment">
+
+                {{ feedback["comment"] or "Không có nội dung" }}
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <p>
+            Chưa có phản hồi nào.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+```
